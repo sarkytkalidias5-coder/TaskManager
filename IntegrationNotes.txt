@@ -1,0 +1,20 @@
+Integration choice for a future NotificationService
+-------------------------------------------------
+I would choose an asynchronous integration pattern.
+
+Why asynchronous:
+1. The Task Service should not wait for email sending to finish.
+2. If the email provider is temporarily unavailable, task completion should still succeed.
+3. Asynchronous messaging improves reliability, scalability, and loose coupling between services.
+4. We can add more subscribers later (audit logging, analytics, mobile push notifications) without changing the Task Service API contract.
+
+Recommended technologies:
+- RabbitMQ as the message broker.
+- The Task Service publishes a "TaskCompleted" event message.
+- NotificationService consumes that event and sends the email.
+
+Alternative:
+- Synchronous HTTP/REST could be used for simple direct communication, but it creates tighter coupling and makes task completion depend on NotificationService availability.
+
+Conclusion:
+For production microservices, RabbitMQ + asynchronous event-driven communication is the better choice.
